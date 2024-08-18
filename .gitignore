@@ -1,0 +1,4 @@
+*.uasset
+__pycache__
+*.umap
+*.uproject
