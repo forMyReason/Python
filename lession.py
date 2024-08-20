@@ -65,7 +65,6 @@ def getAssetClass(classType):
 
 # 注意函数顺序
 
-
 def getStaticMeshData():
     staticMeshes = getAssetClass('StaticMesh')
     for staticMesh in staticMeshes:
@@ -83,7 +82,8 @@ def getStaticMeshData():
             if staticMesh.get_num_lods() == 1:
                 staticMesh.set_editor_property('lod_group','LargeProp')                     # 对于静态网格体实施LOD优化
 
-# 每个lod的三角形数量
+# 平均数量
+# 每个static mesh的每个lod的三角形数量
 def getStaticMeshLODData():
     
     PML = unreal.ProceduralMeshLibrary
@@ -111,26 +111,37 @@ def getStaticMeshLODData():
         # staticMeshReduction = [str(item) + '%' for item in staticMeshReduction]       # TODO:这是一种什么写法?这种写法会有什么好处?
         # 后续可以删除三角形网格数量少于20%的lod，算是一种优化的手段了
         
-        print(staticMesh.get_name())
-        print(staticMeshTriCount)       # python中的占位符,我不会用
-        print(staticMeshReduction)
-        print(".................")
+        # print(staticMesh.get_name())
+        # print(staticMeshTriCount)       # python中的占位符,我不会用
+        # print(staticMeshReduction)
+        # print(".................")
+
+        # 按照LOD 1作为当前mesh多个lod之间的平均网格数
+        staticMeshLODData = []
+        LODData = (staticMesh.get_name() , staticMeshTriCount[0])
+        staticMeshLODData.append(LODData)
+    
+    return staticMeshLODData
 
 # 每个static mesh在场景中出现的次数
 def getStaticMeshInstanceCounts():
 
     levelActors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors()
 
-    # 如何获取下面挂的所有子物体？
+    # TODO:如何获取下面挂的所有子物体？
     staticMeshActors = []
-    staticMeshActorCounts = []
+    staticMeshActorCounts = []      # 作为元组，存储actor和count
 
     for levelActor in levelActors:
+    # print(levelActor.get_class())           # <Object '/Script/Engine.Actor' (0x00000BCCA9E41E00) Class 'Class'>
         if(levelActor.get_class().get_name() == 'StaticMeshActor'):
             staticMeshComponent = levelActor.static_mesh_component
             staticMesh = staticMeshComponent.static_mesh
             staticMeshActors.append(staticMesh.get_name())
     
+    # levelActor.get_name()   #StaticMeshActor_13260
+    # 或者使用actor.get_actor_label()
+
     # for staticMeshActor in staticMeshActors:
     #     print(staticMeshActor)
 
@@ -146,10 +157,31 @@ def getStaticMeshInstanceCounts():
             processedActors.append(staticMeshActor)
     # 排序
     staticMeshActorCounts.sort(key=lambda a: a[1] , reverse=True)
-    for item in staticMeshActorCounts:
+    # 按照每个item第二个元素排序
+    # 它告诉sort()方法使用列表中每个元素的第二个元素（索引为1）作为排序依据。
+    # 这里的a代表列表中的每个元素。
+    # TODO:lambda表达式
+
+    # The sort() function modifies the original list and does not return a new sorted list.
+
+    LODData = getStaticMeshLODData()
+
+    aggregateTriCounts = []
+
+    for i in range(len(staticMeshActorCounts)):
+        for j in range(len(LODData)):
+            if staticMeshActorCounts[i][0] == LODData[j][0]:
+                aggregateTriCount = (staticMeshActorCounts[i][0] , staticMeshActorCounts[i][1] * LODData[j][1])
+                aggregateTriCounts.append(aggregateTriCount)
+    print("22222222222")
+
+    aggregateTriCounts.sort(key = lambda a :a[1] , reverse= True)
+    print("3333333")
+    if not aggregateTriCounts:
+        print("none")
+    for item in aggregateTriCounts:
         print(item)
-
-
-
+        print("1111111111")
 # getStaticMeshData()
 getStaticMeshInstanceCounts()
+1.29

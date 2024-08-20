@@ -14,7 +14,7 @@ def get_all_attached_actors(actor, collected_actors=None):
     for attached_actor in attached_actors:
         collected_actors.append(attached_actor)
         # Recursively get actors attached to this actor
-        get_all_attached_actors(attached_actor, collected_actors)
+        # get_all_attached_actors(attached_actor, collected_actors)
     
     return collected_actors
 
@@ -23,7 +23,7 @@ asset_lib = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
 static_mesh_lib = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
 
 selected_actor = level_lib.get_selected_level_actors()[0]
-# print(selected_actor.get_class().get_name())
+print(selected_actor.get_class().get_name())
 
 # 迭代获取所有子级
 all_attached_actors = get_all_attached_actors(selected_actor)
@@ -33,12 +33,12 @@ for item in all_attached_actors:
     if (item.get_name().split('_')[0] == "StaticMeshActor" ):
         all_static_mesh_actors.append(item)
 
-# if all_attached_actors:
-#     print(f"Actor '{selected_actor.get_name()}' has {len(all_static_mesh_actors)} attached static mesh actor(s) (including all levels of hierarchy).")
-#     for item in all_static_mesh_actors:
-#         print(f" - {item.get_actor_label()}")
-# else:
-#     print(f"Actor '{selected_actor.get_actor_label()}' has no attached static mesh actors.")
+if all_attached_actors:
+    print(f"Actor '{selected_actor.get_name()}' has {len(all_static_mesh_actors)} attached static mesh actor(s) (including all levels of hierarchy).")
+    for item in all_static_mesh_actors:
+        print(f" - {item.get_actor_label()}")
+else:
+    print(f"Actor '{selected_actor.get_actor_label()}' has no attached static mesh actors.")
 
 # 对于世界大纲中的actor：
 # get_name()            # StaticMeshActor_18453
@@ -55,6 +55,7 @@ for item in all_static_mesh_actors:
         if item.get_actor_label().split('_')[0] == data:
             # save to asset in specific name
             saveToAsset(item)
+            print(f" - {item.get_actor_label()} is save!")
         else:
             print(f" - {item.get_actor_label()} is not find!")
 
