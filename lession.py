@@ -8,7 +8,7 @@ def listAssets(path):
     for asset in assets:
         print(asset)
 
-# get users selection   of content and outliner
+# get users selection of content and outliner
 def getSelectionContentBrowser():
     EUL = unreal.EditorUtilityLibrary
     selectionAssets = EUL.get_selected_assets()
@@ -124,6 +124,7 @@ def getStaticMeshLODData():
     return staticMeshLODData
 
 # 每个static mesh在场景中出现的次数
+# 当前场景中的static mesh的资产lod的三角形面数，平均为多少
 def getStaticMeshInstanceCounts():
 
     levelActors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors()
@@ -173,15 +174,46 @@ def getStaticMeshInstanceCounts():
             if staticMeshActorCounts[i][0] == LODData[j][0]:
                 aggregateTriCount = (staticMeshActorCounts[i][0] , staticMeshActorCounts[i][1] * LODData[j][1])
                 aggregateTriCounts.append(aggregateTriCount)
-    print("22222222222")
 
     aggregateTriCounts.sort(key = lambda a :a[1] , reverse= True)
-    print("3333333")
     if not aggregateTriCounts:
         print("none")
     for item in aggregateTriCounts:
         print(item)
-        print("1111111111")
-# getStaticMeshData()
-getStaticMeshInstanceCounts()
-1.29
+
+# 通过简单代码，查看unreal类之间的关系。比如，深挖static mesh component
+
+# 善于使用dir/help
+# 一键替换材质
+def returnMaterialInfomationSMC():
+
+    levelActors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_all_level_actors()
+    testMat = unreal.EditorAssetLibrary.find_asset_data('/Game/Megascans/Surfaces/Brick_Wall_xevtfjz/MI_Brick_Wall_xevtfjz_2K').get_asset()
+    # 到底啥时候用get_editor_subsustem啊？反正这里的library不用
+
+    # TODO:找到静态网格体，几种方法？
+    for levelActor in levelActors:
+        if(levelActor.get_class().get_name() == 'StaticMeshActor'):
+            staticMeshComponent = levelActor.static_mesh_component
+            # 一定要这样获取材质吗？
+            # actor -> SMactor -> staticMeshComponent -> material?
+            # materials = staticMeshComponent.get_materials()
+
+            # for material in materials:
+            #     print(material.get_name())
+
+            #     # TODO:复习try except语句
+            #     try:
+            #         for item in material.texture_parameter_values:
+            #             print(item)
+            #             # 如果有texture，会输出texture的路径
+            #     except:
+            #         pass
+
+            #     print('___')
+
+            # 一键替换 Material
+            for i in range(staticMeshComponent.get_num_materials()):
+                staticMeshComponent.set_material(i,testMat)
+
+returnMaterialInfomationSMC()
