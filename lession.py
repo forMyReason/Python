@@ -108,12 +108,10 @@ def getStaticMeshLODData():
             staticMeshReduction.append((int)((staticMeshTriCount[i] / staticMeshTriCount[0]) * 100))
 
         # staticMeshReduction = [str(item) + '%' for item in staticMeshReduction]       # TODO:这是一种什么写法?这种写法会有什么好处?
-        # 这种情况虽然添加了%,但将三角形的百分比,转为了str,后续不方便比大小
+        # 后续可以删除三角形网格数量少于20%的lod，算是一种优化的手段了
         
         print(staticMesh.get_name())
-        print(staticMeshTriCount)
-        for item in staticMeshReduction:
-            print(str(item) + '%')           # python中的占位符,我不会用
+        print(staticMeshTriCount)       # python中的占位符,我不会用
         print(staticMeshReduction)
         print(".................")
 
