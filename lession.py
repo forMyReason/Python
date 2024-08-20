@@ -8,7 +8,7 @@ def listAssets(path):
     for asset in assets:
         print(asset)
 
-# get users selection of content and outliner
+# get users selection   of content and outliner
 def getSelectionContentBrowser():
     EUL = unreal.EditorUtilityLibrary
     selectionAssets = EUL.get_selected_assets()
@@ -83,6 +83,7 @@ def getStaticMeshData():
             if staticMesh.get_num_lods() == 1:
                 staticMesh.set_editor_property('lod_group','LargeProp')                     # 对于静态网格体实施LOD优化
 
+# 每个lod的三角形数量
 def getStaticMeshLODData():
     
     PML = unreal.ProceduralMeshLibrary
@@ -108,14 +109,47 @@ def getStaticMeshLODData():
             staticMeshReduction.append((int)((staticMeshTriCount[i] / staticMeshTriCount[0]) * 100))
 
         # staticMeshReduction = [str(item) + '%' for item in staticMeshReduction]       # TODO:这是一种什么写法?这种写法会有什么好处?
-        # 这种情况虽然添加了%,但将三角形的百分比,转为了str,后续不方便比大小
+        # 后续可以删除三角形网格数量少于20%的lod，算是一种优化的手段了
         
         print(staticMesh.get_name())
-        print(staticMeshTriCount)
-        for item in staticMeshReduction:
-            print(str(item) + '%')           # python中的占位符,我不会用
+        print(staticMeshTriCount)       # python中的占位符,我不会用
         print(staticMeshReduction)
         print(".................")
 
+# 每个static mesh在场景中出现的次数
+def getStaticMeshInstanceCounts():
+
+    levelActors = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).get_selected_level_actors()
+
+    # 如何获取下面挂的所有子物体？
+    staticMeshActors = []
+    staticMeshActorCounts = []
+
+    for levelActor in levelActors:
+        if(levelActor.get_class().get_name() == 'StaticMeshActor'):
+            staticMeshComponent = levelActor.static_mesh_component
+            staticMesh = staticMeshComponent.static_mesh
+            staticMeshActors.append(staticMesh.get_name())
+    
+    # for staticMeshActor in staticMeshActors:
+    #     print(staticMeshActor)
+
+    # 防止重复，输出当前actor在场景中出现的次数
+    # TODO:前缀一样作为相同的actor
+    processedActors = []
+    for staticMeshActor in staticMeshActors:
+        if staticMeshActor not in processedActors:
+            # print(staticMeshActor , staticMeshActors.count(staticMeshActor))
+            # 作为元组添加到list
+            actorCounts = (staticMeshActor , staticMeshActors.count(staticMeshActor))
+            staticMeshActorCounts.append(actorCounts)
+            processedActors.append(staticMeshActor)
+    # 排序
+    staticMeshActorCounts.sort(key=lambda a: a[1] , reverse=True)
+    for item in staticMeshActorCounts:
+        print(item)
+
+
+
 # getStaticMeshData()
-getStaticMeshLODData()
+getStaticMeshInstanceCounts()

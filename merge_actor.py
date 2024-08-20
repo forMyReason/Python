@@ -29,9 +29,6 @@ for i in actor_list:
 # result = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).merge_static_mesh_actors(actor_list, merge_options)
 
 
-
-
-
 # merge actors
 # Set all the merge options
 merge_options = EditorScriptingMergeStaticMeshActorsOptions()

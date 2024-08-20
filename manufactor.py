@@ -1,7 +1,7 @@
 import unreal
 import csv
 import os
-# import pandas as pd
+import pandas as pd
 
 # 获取当前选中的Actor列表
 selected_actors = unreal.EditorActorSubsystem().get_selected_level_actors()
@@ -88,20 +88,3 @@ for actor in selected_actors:
 # get_name() 方法返回的是 Actor 的内部名称
 # get_actor_label() 
 # 判断 asset是否存在：asset = unreal.EditorAssetLibrary.find_asset_data(asset_path)
-
-
-# def Open_CSV(path_csv):
-#     if not(os.path.splitext(path_csv)[-1] == '.csv'):
-#         print("Open Failed! We need a csv file,rather others")
-#         return
-#     with open(path_csv , 'rb') as file:
-#         result = chardet.detect(file.read())
-#         if result:
-#             encoding = result['encoding']
-#             print('csv文件读取完成。当前csv文件编码为：' + encoding)
-#         else:
-#             print('当前csv文件编码类型检测失败!')
-#     with open (path_csv, 'r' ,encoding='utf-8') as f:
-#         reader = csv.reader(f)
-#         for row in reader:
-#             print(row)
