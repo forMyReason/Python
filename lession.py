@@ -45,7 +45,6 @@ def getAssetClass():
 def getAssetClass(classType):
     EAL = unreal.EditorAssetLibrary()
 
-    # assetPaths = EAL.list_assets('/Game/StarterContent/Architecture/')
     assetPaths = EAL.list_assets('/Game/StarterContent/Props/')
 
     assets = []
@@ -55,15 +54,14 @@ def getAssetClass(classType):
         assetClass = assetData.asset_class_path
         if assetClass.asset_name == classType:
             assets.append(assetData.get_asset())
-            # 这里的static mesh不是路径，不是名称，而是Object本身
-            # <Object '/Game/_Game/Character/Ch19_nonPBR.Ch19_nonPBR' (0x0000067A749DD200) Class 'SkeletalMesh'>
+            # NOTE：这里get_asset()返回的'StaticMesh'，不是路径，不是名称，而是Object本身
+            # 因此，此方法返回的是符合要求的Object Array
     
     # for asset in assets:
     #     print(asset)
     
     return assets
 
-# 注意函数顺序
 
 def getStaticMeshData():
     staticMeshes = getAssetClass('StaticMesh')
@@ -216,4 +214,4 @@ def returnMaterialInfomationSMC():
             for i in range(staticMeshComponent.get_num_materials()):
                 staticMeshComponent.set_material(i,testMat)
 
-returnMaterialInfomationSMC()
+getAssetClass('StaticMesh')
