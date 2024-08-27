@@ -10,7 +10,6 @@ asset_lib = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
 
 selected_actors = level_lib.get_selected_level_actors()
 selected_static_actors = unreal.EditorFilterLibrary.by_class(selected_actors,unreal.StaticMeshActor)
-selected_static_actors = unreal.EditorFilterLibrary.by_class(selected_actors,unreal.StaticMeshActor)
 
 setting = unreal.MeshMergingSettings()
 setting.pivot_point_at_zero = True
