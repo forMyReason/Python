@@ -11,16 +11,16 @@ asset_lib = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
 selected_actors = level_lib.get_selected_level_actors()
 selected_static_actors = unreal.EditorFilterLibrary.by_class(selected_actors,unreal.StaticMeshActor)
 
-setting = unreal.MeshMergingSettings()
-setting.pivot_point_at_zero = True
+merge_setting = unreal.MeshMergingSettings()
+merge_setting.pivot_point_at_zero = True
 
 merge_options = unreal.MergeStaticMeshActorsOptions(
     destroy_source_actors   =   False,
     spawn_merged_actor      =   False,
-    mesh_merging_settings   =   setting
+    mesh_merging_settings   =   merge_setting
 )
 
-save_path = r'/Game/Temp_Fbx_Export'
+save_path = r'/Game/Temp_Fbx_Export/'
 
 fbx_exporter = unreal.StaticMeshExporterFBX()
 fbx_option = unreal.FbxExportOption()
