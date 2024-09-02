@@ -10,3 +10,6 @@ AssetData:
         asset_name: "StaticMesh"
     }
 }
+
+// Object
+<Object '/Game/ARJ_Model/140/140A104BB0300_01/S4648A050_1_1__body1_4.S4648A050_1_1__body1_4' (0x00000B58D681B600) Class 'StaticMesh'>

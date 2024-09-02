@@ -1,5 +1,19 @@
-import threading
+# HEADER   :
+#   File     :   thread_lock.py
+#   Create   :   2024/08/30
+#   Author   :   LiDanyang 
+#   Branch   :   master
+#   Descript :   
 
+# Reference  :
+#   1. https://www.baidu.com
+#   2. https://www.google.com
+
+# UPDATE  :
+#   Last Edit  :   2024/09/02 15:23:48
+#   Status     :   Need Review
+
+import threading
 def job_1():
     global A,lock
     lock.acquire()      # 锁上
