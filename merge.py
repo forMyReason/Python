@@ -8,6 +8,7 @@ import pandas as pd
 from multiprocessing import Pool, Process
 import threading
 from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
 
 def saveToAsset(actor , GW , AO):
     try:
@@ -15,13 +16,13 @@ def saveToAsset(actor , GW , AO):
         setting.pivot_point_at_zero = True
         setting.merge_materials = False
 
-        options = unreal.EditorScriptingMergeStaticMeshActorsOptions(
+        options = unreal.MergeStaticMeshActorsOptions(
             destroy_source_actors   =   False,
             spawn_merged_actor      =   False,
             mesh_merging_settings   =   setting
         )
 
-        temp_dir = os.path.join('/Game/ARJ_Model', str(GW), str(AO))
+        temp_dir = os.path.join('/Game/ARJ_Model/', str(GW), str(AO))
 
         actor_name = actor.get_name()
         actor_label = actor.get_actor_label()
@@ -53,6 +54,22 @@ def get_all_attached_actors(actor, collected_actors=None):
         get_all_attached_actors(attached_actor, collected_actors)
     return collected_actors
 
+# def test():
+#     unreal.log_warning(f"Thread {threading.current_thread().name} is processing {item.get_actor_label()}")
+#     print(item.get_actor_label())
+
+
+def save_to_asset_on_main_thread(item, gw, ao):
+    # 在主线程上调用 saveToAsset 函数
+    print("11111111")
+    unreal.execute_on_main_thread(saveToAsset, item, gw, ao)
+
+    print("2222222222")
+
+def threaded_task(item, gw, ao):
+    # 这里可以执行一些非引擎相关的计算或准备工作
+    save_to_asset_on_main_thread(item, gw, ao)
+
 level_lib = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
 asset_lib = unreal.get_editor_subsystem(unreal.EditorAssetSubsystem)
 static_mesh_lib = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
@@ -78,7 +95,7 @@ df_target_col = df.loc[:,['工位','零组件号',"下级工艺件"]]
 
 timeStart = time.time()
 
-# # 原始逻辑:已修改
+# 原始逻辑:已修改
 # for item in all_static_mesh_actors:
 #     if item.static_mesh_component.static_mesh:
 #         label = item.get_actor_label().split('_')
@@ -88,21 +105,29 @@ timeStart = time.time()
 #             if df_copy.size:
 #                 for index, row in df_copy.iterrows():
 #                     saveToAsset(item, row['工位'], row['下级工艺件'])
+#             else:
+#                 unreal.log_error(f"{item.get_actor_label()} has no data in df_copy.")
 #     else:
 #         unreal.log_error(f"{item.get_actor_label()} has no static mesh component.")
 
-
-# 使用多线程提高执行效率，但ue的某些操作只能放在主线程中执行
-# with ThreadPoolExecutor(max_workers=4) as p:
+# with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
 #     for item in all_static_mesh_actors:
-#         df_copy = df_target_col[df['零组件号'] == item.get_actor_label().split('_')[0]].copy()
-
-#         if df_copy.size:
-#             for index, row in df_copy.iterrows():
-#                 p.submit(saveToAsset, item, row['工位'], row['下级工艺件'])
+#         if item.static_mesh_component.static_mesh:
+#             label = item.get_actor_label().split('_')
+#             if label:
+#                 df_copy = df_target_col[df['零组件号'] == label[0]].copy()
+#                 # print(df_copy)
+#                 if df_copy.size:
+#                     for index, row in df_copy.iterrows():
+#                         # 将任务提交给线程池
+#                         executor.submit(threaded_task, item, row['工位'], row['下级工艺件'])
+#                 else:
+#                     unreal.log_error(f"{item.get_actor_label()} has no data in df_copy.")
+#         else:
+#             unreal.log_error(f"{item.get_actor_label()} has no static mesh component.")
 
 # 批量处理：逻辑已修改
-batch_size = 500  # 每批处理的数量
+batch_size = 1000  # 每批处理的数量
 num_batches = (len(all_static_mesh_actors) + batch_size - 1)        # batch_size
 
 for i in range(num_batches):
@@ -118,4 +143,9 @@ for i in range(num_batches):
     # 处理完一批后，可以调用GC（垃圾回收），以释放内存
     unreal.SystemLibrary.collect_garbage()
 
-unreal.log_error(time.time() - timeStart)
+unreal.log_warning(time.time() - timeStart)
+
+# 资产保存逻辑
+unreal.EditorAssetSubsystem().save_directory('/Game/',only_if_is_dirty=True,recursive=True)
+# unreal.EditorAssetSubsystem().save_directory('/Game/ARJ_Model/',only_if_is_dirty=True,recursive=True)
+unreal.log("保存执行完毕！")
