@@ -10,6 +10,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
 
+# TODO:可以当成snippet方便复用
 def saveToAsset(actor , GW , AO):
     try:
         setting = unreal.MeshMergingSettings()
@@ -53,11 +54,6 @@ def get_all_attached_actors(actor, collected_actors=None):
         # Recursively get actors attached to this actor
         get_all_attached_actors(attached_actor, collected_actors)
     return collected_actors
-
-# def test():
-#     unreal.log_warning(f"Thread {threading.current_thread().name} is processing {item.get_actor_label()}")
-#     print(item.get_actor_label())
-
 
 def save_to_asset_on_main_thread(item, gw, ao):
     # 在主线程上调用 saveToAsset 函数
@@ -146,6 +142,6 @@ for i in range(num_batches):
 unreal.log_warning(time.time() - timeStart)
 
 # 资产保存逻辑
-unreal.EditorAssetSubsystem().save_directory('/Game/',only_if_is_dirty=True,recursive=True)
-# unreal.EditorAssetSubsystem().save_directory('/Game/ARJ_Model/',only_if_is_dirty=True,recursive=True)
+unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/',only_if_is_dirty=True,recursive=True)
+# unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model/',only_if_is_dirty=True,recursive=True)
 unreal.log("保存执行完毕！")
