@@ -1,51 +1,54 @@
+##################################################
+# HEADER   :
+#   File     :   merge_all.py
+#   Create   :   2024/09/02
+#   Author   :   LiDanyang 
+#   Branch   :   lession
+#   Descript :   合并某路径下的所有asset
+
+# UPDATE  :
+#   Last Edit  :   2024/09/02 14:34:03
+#   Status     :   GiveUp
+##################################################
+
 import unreal
 import os
 
-# 合并某路径下的所有actor
-# folder_path = "/Game/Python"
-folder_path = "/Game/Temp_Fbx_Export"
+folder_path = r"/Game/ARJ_Model/221/221A403AD0120/"
 
-output_path = "/Game/Temp_Fbx_Export/MergedMesh"
-output_name = "MergedStaticMesh"
+merge_path = r"/Game/ARJ_Model/221/"
+merge_name = folder_path.split('/')[-2]
+print(merge_path)
+print(merge_name)
 
-# TODO:Asset Registry
-# Get the Asset Registry to find all assets in  the folder
+static_mesh_lib = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
+
 asset_registry = unreal.AssetRegistryHelpers.get_asset_registry()
-# 获取asset data
-assets = asset_registry.get_assets_by_path(folder_path, recursive=False)        # 是否迭代文件夹 assetData
+assets_data = asset_registry.get_assets_by_path(folder_path, recursive=False)        # 返回struct，assetdata
+# assets_path = unreal.EditorAssetLibrary.list_assets(folder_path, recursive=True, include_folder=False)       # 返回str，所有asset的相对路径
 
 static_mesh_assets = []
 
-# asset.is_asset_loaded() 确保资产已经被load进内存中，才能执行操作
-
-for asset in assets:
-    if asset.get_class() == unreal.StaticMesh.static_class():
-        if not asset.is_asset_loaded():
-            unreal.load_asset(asset.get_full_name())        # get_name() 和 get_full_name()
+for asset in assets_data:
+    print(asset.get_asset())
+    if isinstance(asset.get_asset(),unreal.StaticMesh):
         static_mesh_assets.append(asset)
+        unreal.load_asset(asset.package_path)
+
+# load进内存之后，是不是就相当于已经是actor了？就可以考虑merge了？
 
 if not static_mesh_assets:
     print(f"No static meshes found in folder: {folder_path}")
 else:
-    # for i in static_mesh_assets:
-    #     print(i.asset_class)                # None
-    #     print(i.asset_class_path)           # <Struct 'TopLevelAssetPath' (0x000008E80B50111C) {package_name: "/Script/Engine", asset_name: "StaticMesh"}>
-    
-    # Setup the mesh merging options
-    merge_options = unreal.MeshMergingSettings()
-    merge_options.pivot_point_at_zero=True
+    merge_setting = unreal.MeshMergingSettings()
+    merge_setting.pivot_point_at_zero = True
 
-    # Specify where to save the merged static mesh
-    merge_tool = unreal.MeshMergingTool()
-    package_path = f"{output_path}/{output_name}"
-
-    # Perform the mesh merge operation
-    merged_asset = merge_tool.merge_static_mesh_actors(
-        static_mesh_actors=static_meshes,
-        mesh_merging_settings=merge_options,
-        package_name=package_path,
-        merge_mesh_data=None,
+    asset_path = os.path.join(merge_path , merge_name)
+    merge_options = unreal.MergeStaticMeshActorsOptions(
+        base_package_name = asset_path,
+        mesh_merging_settings = merge_setting
     )
+    merged_asset = static_mesh_lib.merge_static_mesh_actors(static_mesh_assets , merge_options)
 
     if merged_asset:
         print(f"Merged Static Mesh created at: {package_path}")
