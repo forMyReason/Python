@@ -13,3 +13,17 @@ AssetData:
 
 // Object
 <Object '/Game/ARJ_Model/140/140A104BB0300_01/S4648A050_1_1__body1_4.S4648A050_1_1__body1_4' (0x00000B58D681B600) Class 'StaticMesh'>
+
+// Static Material
+[
+    {
+        material_interface: /Script/Engine.Material'"/Game/StarterContent/Props/Materials/M_StatueGlass.M_StatueGlass"',
+        material_slot_name: "M_StatueGlass",
+        uv_channel_data: {}
+    },
+    {
+        material_interface: /Script/Engine.Material'"/Game/StarterContent/Props/Materials/M_Statue.M_Statue"',
+        material_slot_name: "M_Statue",
+        uv_channel_data: {}
+    }
+]

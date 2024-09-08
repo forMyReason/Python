@@ -1,4 +1,3 @@
-
 # HEADER   :
 #   File     :   BaseProcess.py
 #   Create   :   2024/09/06
