@@ -1,3 +1,5 @@
+# 本脚本主要用于合并当前选择文件夹下面的所有的static mesh asset
+
 import unreal
 import time
 
@@ -43,21 +45,20 @@ def MergeActors(actor_list , merge_name , save_path):
 
 
 time0 = time.time()
-#获取当前选择文件夹路径
-selected_paths = unreal.EditorUtilityLibrary.get_selected_folder_paths()
-# active_path = selected_paths[0]
-for active_path in selected_paths:
-    merge_name = active_path.split('/')[-1]
 
+# 获取选中的文件夹路径
+selected_paths = unreal.EditorUtilityLibrary.get_selected_folder_paths()
+active_path = selected_paths[0]             # /Game/ARJ_Model/221/221A101SR0010
+for active_path in selected_paths:
+    merge_name = active_path.split('/')[-1]     # 221A101SR0010
+
+    # 获取当前文件夹中所有的资产路径
     assets_path = unreal.EditorAssetLibrary.list_assets(active_path, recursive=True, include_folder=False)
 
     # Get the current level
     current_world = unreal.UnrealEditorSubsystem().get_editor_world()
 
     for asset_path in assets_path:
-
-        # 判断当前场景是否已经存在该资产，暂时没必要
-
         # 根据路径加载资产进内存
         asset = unreal.EditorAssetLibrary.load_asset(asset_path)
         print(f"Loaded asset: {asset_path}")
@@ -83,12 +84,11 @@ for active_path in selected_paths:
 
     level_actors = level_lib.get_all_level_actors()
     static_mesh_actors = unreal.EditorFilterLibrary.by_class(level_actors, unreal.StaticMeshActor)
-    print(static_mesh_actors[0].get_actor_label())
 
     # for item in static_mesh_actors:
     #     print(item.get_actor_label())
 
-    # 合并所有选中的actor
+    # 合并所有选中的static mesh actor
     MergeActors(static_mesh_actors, merge_name, active_path)
 
     # 保存逻辑

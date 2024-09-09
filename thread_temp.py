@@ -46,7 +46,7 @@ import time
 # print("--" + str(time.time()-time0))
 # 因为两个线程是并列的，所以每次执行执行主线程都会 print 一次
 
-# https://www.cnblogs.com/lizm166/p/14658484.html
+
 ## 例子2
 def foo(i):
     print('say hi', i)
