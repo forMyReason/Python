@@ -33,7 +33,7 @@ def saveToAsset(actor , GW , AO):
         # TODO:将选中的actor合并成 static mesh
 
         if unreal.EditorAssetLibrary().does_asset_exist(asset_path):
-            unreal.log_warning("当前资产 %s 已存在" % actor_label)
+            unreal.log("当前资产 %s 已存在" % actor_label)
         else:
             merge_actor = static_mesh_lib.merge_static_mesh_actors([actor],options)     # 单独导出
             print("EXPORT SUCCESS : %s is save to %s" % (actor.get_actor_label(), asset_path.replace('\\','/')))
@@ -135,6 +135,10 @@ for i in range(num_batches):
             if df_copy.size:
                 for index, row in df_copy.iterrows():
                     saveToAsset(item, row['工位'], row['下级工艺件'])
+            else:
+                unreal.log(f"当前csv数据中未找到：{item.get_actor_label()}")
+        else:
+            unreal.log_error(f"丢失static mesh component：{item.get_actor_label()}")
 
     # 处理完一批后，可以调用GC（垃圾回收），以释放内存
     unreal.SystemLibrary.collect_garbage()

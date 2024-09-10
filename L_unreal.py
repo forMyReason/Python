@@ -2,13 +2,16 @@
 
 import unreal
 
-path = '/Game/_Game/Character'
+path = '/Game/Python/'
+# path = '/Game/ARJ_Model/212/229A0108-000-001'
 
 def listAssets(path):
     # 获取所有资产
     assets = unreal.EditorAssetLibrary.list_assets(path, recursive=True, include_folder=False)
     for asset in assets:
         print(asset)
+
+listAssets(path)
 
 # get users selection of content and outliner
 def getSelectionContentBrowser():
@@ -218,4 +221,4 @@ def returnMaterialInfomationSMC():
             for i in range(staticMeshComponent.get_num_materials()):
                 staticMeshComponent.set_material(i,testMat)
 
-returnMaterialInfomationSMC()
+# returnMaterialInfomationSMC()
