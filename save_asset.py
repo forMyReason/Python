@@ -10,7 +10,7 @@ def saveAsset():
 
 # 指定文件夹路径
 def saveDirectory():
-    unreal.EditorAssetSubsystem().save_directory('/Game/_Actor/merge_test/',only_if_is_dirty=False,recursive=True)
+    unreal.EditorAssetSubsystem().save_directory('/Game/', only_if_is_dirty=True, recursive=True)
 
 # load Package to memory
 def getPackageFromPath():

@@ -32,23 +32,24 @@ import unreal
 # )
 
 
-# # 修改材质实例的父材质
-# def change_material_instance_parent(material_instance_path, new_parent_path):
-#     # 加载材质实例和新的父材质
-#     material_instance = unreal.EditorAssetLibrary.load_asset(material_instance_path)
-#     new_parent = unreal.EditorAssetLibrary.load_asset(new_parent_path)
-#
-#     # 确保加载成功，并且两个都是材质类型
-#     if isinstance(material_instance, unreal.MaterialInstance) and \
-#        (isinstance(new_parent, unreal.Material) or isinstance(new_parent, unreal.MaterialInstance)):
-#         # 设置材质实例的父材质
-#         unreal.MaterialEditingLibrary.set_material_instance_parent(material_instance, new_parent)
-#         print(f"Changed parent of {material_instance_path} to {new_parent_path}")
-#     else:
-#         print("Error: Invalid material instance or new parent material.")
-#
-#     unreal.EditorAssetSubsystem().save_directory('/Game/Python/', only_if_is_dirty=False, recursive=True)
-#
-# # 使用示例
+# 修改材质实例的父材质
+def change_material_instance_parent(material_instance_path, new_parent_path):
+    # 加载材质实例和新的父材质
+    material_instance = unreal.EditorAssetLibrary.load_asset(material_instance_path)
+    new_parent = unreal.EditorAssetLibrary.load_asset(new_parent_path)
+
+    # 确保加载成功，并且两个都是材质类型
+    if isinstance(material_instance, unreal.MaterialInstance) and \
+       (isinstance(new_parent, unreal.Material) or isinstance(new_parent, unreal.MaterialInstance)):
+        # 设置材质实例的父材质
+        unreal.MaterialEditingLibrary.set_material_instance_parent(material_instance, new_parent)
+        print(f"Changed parent of {material_instance_path} to {new_parent_path}")
+    else:
+        print("Error: Invalid material instance or new parent material.")
+
+    unreal.EditorAssetSubsystem().save_directory('/Game/Python/', only_if_is_dirty=False, recursive=True)
+
+# 使用示例
 # change_material_instance_parent('/Game/Python/MI_red',
 #                                 '/Game/Python/M_Color')
+#
