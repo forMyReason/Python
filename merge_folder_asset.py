@@ -3,21 +3,6 @@
 import unreal
 import time
 
-# TODO:对于大量资产不适用，有没有更好的方法？
-# def asset_exists_in_scene(asset_path):
-#     actors = unreal.EditorLevelLibrary.get_all_level_actors()
-
-#     for actor in actors:
-#         if isinstance(actor, unreal.StaticMeshActor):
-#             static_mesh_component = actor.static_mesh_component
-#             if static_mesh_component and static_mesh_component.static_mesh:
-#                 # 获取演员的静态网格的路径
-#                 actor_asset_path = static_mesh_component.static_mesh.get_path_name()
-
-#                 # 比较路径，检查是否是目标资产
-#                 if actor_asset_path == asset_path:
-#                     return True
-
 # 合并actor list
 # TODO：需要整理merge相关操作
 def MergeActors(actor_list , merge_name , save_path):

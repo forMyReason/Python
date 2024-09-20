@@ -47,8 +47,6 @@ def change_material_instance_parent(material_instance_path, new_parent_path):
     else:
         print("Error: Invalid material instance or new parent material.")
 
-    unreal.EditorAssetSubsystem().save_directory('/Game/Python/', only_if_is_dirty=False, recursive=True)
-
 # 使用示例
 # change_material_instance_parent('/Game/Python/MI_red',
 #                                 '/Game/Python/M_Color')
