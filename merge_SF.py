@@ -26,7 +26,9 @@ def saveToAsset(actor, GW, AO):
 
         # TODO：模型保存路径
         # 供应商模型保存路径
-        temp_dir = os.path.join('/Game/ARJ_Model_GYS/', str(GW), str(AO))
+        # temp_dir = os.path.join('/Game/ARJ_Model_GYS/', str(GW), str(AO))
+        # 上飞厂模型保存路径
+        temp_dir = os.path.join('/Game/ARJ_Model/', str(GW), str(AO))
 
         actor_label = actor.get_actor_label()
         asset_path = os.path.join(temp_dir,actor_label).replace('\\', '/') # /Game/ARJ_Model_GYS/221/531A0000-000-403/PD_269A1011-011-001__body1
@@ -59,20 +61,22 @@ for item in selected_actors:
 # TODO：CSV路径
 # 供应商CSV路径
 # csv_path = r"C:\Users\DELL\Desktop\0911\531A0000-000-403\531A0000-000-403_0918.csv"
-csv_path = r"C:\Users\DELL\Desktop\0911\331-RR-403_284_ARJ21_BOM\331-RR-403_0913.csv"
+# 上飞厂CSV路径
+csv_path = r"C:\Users\DELL\Desktop\所有工位_0823.csv"
 
 file_name = csv_path.split('\\')[-1].split('_')[0]
 df = pd.read_csv(csv_path)
 
 # TODO:仅需针对性修改列名称即可筛选目标列
 # 供应商CSV列名
-df_target_col = df.loc[:, ['零组件编号',"下级工程组件"]]
+# df_target_col = df.loc[:, ['零组件编号',"下级工程组件"]]
+# 上飞厂CSV列名
+df_target_col = df.loc[:,['工位','零组件号',"下级工艺件"]]
 
 timeStart = time.time()
 
-
 # 批量处理：逻辑已修改
-batch_size = 3000  # 每批处理的数量
+batch_size = 5000  # 每批处理的数量
 num_batches = (len(all_static_mesh_actors) + batch_size - 1)  # batch_size
 csv_count = 0
 no_data_count = 0
@@ -97,13 +101,17 @@ for i in range(num_batches):
         if item.static_mesh_component.static_mesh:
             # TODO:替换列名称：零组件号 / 零组件编号
             # 供应商CSV列名
-            df_copy = df_target_col[df['零组件编号'] == item_name].copy()
-
+            # df_copy = df_target_col[df['零组件编号'] == item_name].copy()
+            # 上飞厂CSV列名
+            df_copy = df_target_col[df['零组件号'] == item_name].copy()
             if df_copy.size:
                 for index, row in df_copy.iterrows():
                     # TODO：修改工位和保存名称
                     # 供应商工位号和保存零件名称
-                    saveToAsset(item, '221', file_name)
+                    # saveToAsset(item, '221', file_name)
+                    # 上飞厂工位号和保存零件名称
+                    saveToAsset(item, row['工位'], row['下级工艺件'])
+
                     unreal.log("save_to_asset")
             else:
                 unreal.log(f"当前csv数据中未找到：{item.get_actor_label()}")
@@ -121,5 +129,7 @@ unreal.log_warning(time.time() - timeStart)
 
 # TODO:修改资产保存逻辑
 # 供应商模型保存
-unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model_GYS/',only_if_is_dirty=True,recursive=True)
+# unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model_GYS/',only_if_is_dirty=True,recursive=True)
+# 上飞厂模型保存
+unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model/',only_if_is_dirty=True,recursive=True)
 unreal.log("保存执行完毕！")

@@ -39,8 +39,7 @@ def change_material_instance_parent(material_instance_path, new_parent_path):
     new_parent = unreal.EditorAssetLibrary.load_asset(new_parent_path)
 
     # 确保加载成功，并且两个都是材质类型
-    if isinstance(material_instance, unreal.MaterialInstance) and \
-       (isinstance(new_parent, unreal.Material) or isinstance(new_parent, unreal.MaterialInstance)):
+    if isinstance(material_instance, unreal.MaterialInstance) and (isinstance(new_parent, unreal.Material) or isinstance(new_parent, unreal.MaterialInstance)):
         # 设置材质实例的父材质
         unreal.MaterialEditingLibrary.set_material_instance_parent(material_instance, new_parent)
         print(f"Changed parent of {material_instance_path} to {new_parent_path}")
@@ -51,3 +50,10 @@ def change_material_instance_parent(material_instance_path, new_parent_path):
 # change_material_instance_parent('/Game/Python/MI_red',
 #                                 '/Game/Python/M_Color')
 #
+
+
+assetData_matIns = unreal.EditorAssetLibrary.find_asset_data(mat.get_path_name()).get_asset()
+duplicate_material = unreal.EditorAssetLibrary().duplicate_asset(mat_parent.get_path_name(),
+                                                                 mat_parent_folder_path + str(mat_parent.get_name()))
+assetData_matParent = unreal.EditorAssetLibrary.find_asset_data(duplicate_material.get_path_name()).get_asset()
+assetData_matIns.set_editor_property('Parent', assetData_matParent)

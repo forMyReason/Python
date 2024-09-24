@@ -28,7 +28,6 @@ def MergeActors(actor_list , merge_name , save_path):
     except Exception as e:
         unreal.log_error(f"Error in saveToAsset: {e}")
 
-
 time0 = time.time()
 
 # 获取选中的文件夹路径
