@@ -1,6 +1,7 @@
 # develop 分支
 from operator import contains
 
+# UPDATE: 2024/9/20 9:10 -> 人生建议：不要写隔夜的代码。一堆屎山。
 # UPDATE: 2024/9/19 15:01 -> 新增命名匹配逻辑，对于PD开头，body结尾的actor，进行正则表达式匹配，将__body后面的字符替换为空字符串
 # UPDATE: 2024/9/13 16:24 -> 本脚本是对于merge.py的简化，用于针对性的对供应商的模型按原AO+工位进行分类。原始脚本请看merge.py
 

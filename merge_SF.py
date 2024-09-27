@@ -62,7 +62,7 @@ for item in selected_actors:
 # 供应商CSV路径
 # csv_path = r"C:\Users\DELL\Desktop\0911\531A0000-000-403\531A0000-000-403_0918.csv"
 # 上飞厂CSV路径
-csv_path = r"C:\Users\DELL\Desktop\所有工位_0823.csv"
+csv_path = r"C:/Users/DELL/Desktop/0911/NotFound/0925_211工位查询情况.csv"
 
 file_name = csv_path.split('\\')[-1].split('_')[0]
 df = pd.read_csv(csv_path)
@@ -71,7 +71,7 @@ df = pd.read_csv(csv_path)
 # 供应商CSV列名
 # df_target_col = df.loc[:, ['零组件编号',"下级工程组件"]]
 # 上飞厂CSV列名
-df_target_col = df.loc[:,['工位','零组件号',"下级工艺件"]]
+df_target_col = df.loc[:,['工位','零组件号',"下级工艺件","查询状态"]]
 
 timeStart = time.time()
 
@@ -103,33 +103,38 @@ for i in range(num_batches):
             # 供应商CSV列名
             # df_copy = df_target_col[df['零组件编号'] == item_name].copy()
             # 上飞厂CSV列名
-            df_copy = df_target_col[df['零组件号'] == item_name].copy()
-            if df_copy.size:
-                for index, row in df_copy.iterrows():
-                    # TODO：修改工位和保存名称
-                    # 供应商工位号和保存零件名称
-                    # saveToAsset(item, '221', file_name)
-                    # 上飞厂工位号和保存零件名称
-                    saveToAsset(item, row['工位'], row['下级工艺件'])
+            df_copy = df_target_col[df_target_col['零组件号'] == item_name].copy()
+            df_target_col.loc[df_target_col['零组件号'] == item_name, '查询状态'] += 1
 
-                    unreal.log("save_to_asset")
-            else:
-                unreal.log(f"当前csv数据中未找到：{item.get_actor_label()}")
-                csv_count += 1
-        else:
-            unreal.log_error(f"丢失static mesh component：{item.get_actor_label()}")
-            no_data_count += 1
+df_target_col.to_csv(csv_path, index=False, encoding='utf-8-sig')
+unreal.log("查询状态已保存！")
 
-    # 处理完一批后，可以调用GC（垃圾回收），以释放内存
-    unreal.SystemLibrary.collect_garbage()
-
-unreal.log(csv_count)
-unreal.log(no_data_count)
-unreal.log_warning(time.time() - timeStart)
-
-# TODO:修改资产保存逻辑
-# 供应商模型保存
-# unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model_GYS/',only_if_is_dirty=True,recursive=True)
-# 上飞厂模型保存
-unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model/',only_if_is_dirty=True,recursive=True)
-unreal.log("保存执行完毕！")
+#             if df_copy.size:
+#                 for index, row in df_copy.iterrows():
+#                     # TODO：修改工位和保存名称
+#                     # 供应商工位号和保存零件名称
+#                     # saveToAsset(item, '221', file_name)
+#                     # 上飞厂工位号和保存零件名称
+#                     saveToAsset(item, row['工位'], row['下级工艺件'])
+#
+#                     unreal.log("save_to_asset")
+#             else:
+#                 unreal.log(f"当前csv数据中未找到：{item.get_actor_label()}")
+#                 csv_count += 1
+#         else:
+#             unreal.log_error(f"丢失static mesh component：{item.get_actor_label()}")
+#             no_data_count += 1
+#
+#     # 处理完一批后，可以调用GC（垃圾回收），以释放内存
+#     unreal.SystemLibrary.collect_garbage()
+#
+# unreal.log(csv_count)
+# unreal.log(no_data_count)
+# unreal.log_warning(time.time() - timeStart)
+#
+# # TODO:修改资产保存逻辑
+# # 供应商模型保存
+# # unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model_GYS/',only_if_is_dirty=True,recursive=True)
+# # 上飞厂模型保存
+# unreal.get_editor_subsystem(unreal.EditorAssetSubsystem).save_directory('/Game/ARJ_Model/',only_if_is_dirty=True,recursive=True)
+# unreal.log("保存执行完毕！")
